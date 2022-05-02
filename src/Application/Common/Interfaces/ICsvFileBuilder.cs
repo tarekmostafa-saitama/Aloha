@@ -1,8 +1,8 @@
-﻿using CleanArchitecture.Application.TodoLists.Queries.ExportTodos;
+﻿//using CleanArchitecture.Application.TodoLists.Queries.ExportTodos;
 
-namespace CleanArchitecture.Application.Common.Interfaces;
+//namespace CleanArchitecture.Application.Common.Interfaces;
 
-public interface ICsvFileBuilder
-{
-    byte[] BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
-}
+//public interface ICsvFileBuilder
+//{
+//    byte[] BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
+//}
