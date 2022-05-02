@@ -1,0 +1,66 @@
+<div class="container">
+<div class="pace-top">
+    <div id="app" class="app app-full-height app-without-header">
+
+        <div class="login">
+
+            <div class="login-content">
+                <form [formGroup]="signupForm" (ngSubmit)="register()">
+                    <h1 class="text-center">Sign Up</h1>
+                    <div class="text-white text-opacity-50 text-center mb-4">
+                        For your protection, please verify your identity.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" formControlName="fullName"
+                            class="form-control form-control-lg bg-white bg-opacity-5" value="" placeholder="">
+                        <span *ngIf="!signupForm.get('fullName').valid && signupForm.get('fullName').touched"
+                            class="help-block text-danger">Please
+                            enter a valid
+                            full name.</span>
+                    </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                <input type="text" formControlName="email" class="form-control form-control-lg bg-white bg-opacity-5" value=""
+                                    placeholder="">
+                                <span *ngIf="!signupForm.get('email').valid && signupForm.get('email').touched"
+                                    class="help-block text-danger">Please
+                                    enter a valid
+                                    email.</span>
+                            </div>
+                    <div class="mb-3">
+                        <div class="d-flex">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <a href="#" class="ms-auto text-white text-decoration-none text-opacity-50">Forgot
+                                password?</a>
+                        </div>
+                        <input type="password" formControlName="password"
+                            class="form-control form-control-lg bg-white bg-opacity-5" value="" placeholder="">
+                        <span *ngIf="!signupForm.get('password').valid && signupForm.get('password').touched"
+                            class="help-block text-danger">Please
+                            enter a valid
+                            password.</span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="customCheck1">
+                            <label class="form-check-label" for="customCheck1">Remember me</label>
+                        </div>
+                    </div>
+                    <button [disabled]="!signupForm.valid" type="submit"
+                        class="btn btn-outline-theme btn-lg d-block w-100 fw-500 mb-3">Sign In</button>
+                    <div class="text-center text-white text-opacity-50">
+                        have an account ? <a routerLink="/login" routerLinkActive="router-link-active">Sign In</a>.
+                    </div>
+                    <br>
+                    <span class="text-danger">
+                        {{errorMessage}}
+                    </span>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</div>

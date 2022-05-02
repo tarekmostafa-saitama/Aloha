@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿//using NUnit.Framework;
 
-namespace CleanArchitecture.Application.IntegrationTests;
+//namespace CleanArchitecture.Application.IntegrationTests;
 
-using static Testing;
+//using static Testing;
 
-public class TestBase
-{
-    [SetUp]
-    public async Task TestSetUp()
-    {
-        await ResetState();
-    }
-}
+//public class TestBase
+//{
+//    [SetUp]
+//    public async Task TestSetUp()
+//    {
+//        await ResetState();
+//    }
+//}
