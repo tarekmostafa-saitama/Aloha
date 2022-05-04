@@ -25,6 +25,8 @@
     "@fortawesome/angular-fontawesome": "^0.9.0",
     "@fortawesome/fontawesome-svg-core": "1.2.30",
     "@fortawesome/free-solid-svg-icons": "5.14.0",
+    "@microsoft/signalr": "^6.0.4",
+    "@microsoft/signalr-protocol-msgpack": "^6.0.4",
     "aspnet-prerendering": "^3.0.1",
     "assert": "^2.0.0",
     "bootstrap": "^4.3.1",

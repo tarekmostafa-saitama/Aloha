@@ -9,19 +9,20 @@ public static class ApplicationDbContextSeed
 {
     public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
     {
-        var administratorRole = new IdentityRole("Administrator");
+        var Role1 = new IdentityRole("Admin");
+        var Role2 = new IdentityRole("User");
 
-        if (roleManager.Roles.All(r => r.Name != administratorRole.Name))
+        if (roleManager.Roles.All(r => r.Name != Role2.Name))
         {
-            await roleManager.CreateAsync(administratorRole);
+            await roleManager.CreateAsync(Role2);
         }
 
-        var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var user = new ApplicationUser { UserName = "tarek@gmail.com", Email = "tarek@gmail.com" };
 
-        if (userManager.Users.All(u => u.UserName != administrator.UserName))
+        if (userManager.Users.All(u => u.UserName != user.UserName))
         {
-            await userManager.CreateAsync(administrator, "Administrator1!");
-            await userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
+            await userManager.CreateAsync(user, "Administrator1!");
+            await userManager.AddToRolesAsync(user, new[] { Role2.Name });
         }
     }
 

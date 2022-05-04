@@ -28,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     }
 
 
+    public DbSet<ConversationHistory> ConversationHistories { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

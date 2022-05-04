@@ -3,6 +3,7 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.WebUI.Filters;
+using CleanArchitecture.WebUI.Hubs;
 using CleanArchitecture.WebUI.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,24 @@ public class Startup
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
+
+        services.AddSignalR(o =>
+        {
+            o.EnableDetailedErrors = true;
+        }).AddMessagePackProtocol();
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .WithOrigins(
+                        "http://localhost")
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowAnyMethod();
+            });
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,14 +113,13 @@ public class Startup
         });
 
         app.UseRouting();
-
+        app.UseCors();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller}/{action=Index}/{id?}");
+            endpoints.MapControllers();
+            endpoints.MapHub<TextChatHub>("/textChat");
             endpoints.MapRazorPages();
         });
 

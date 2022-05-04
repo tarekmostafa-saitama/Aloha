@@ -19,6 +19,7 @@ import { ToastrModule } from "ngx-toastr";
 import { appInitializer } from "./Shared/Helpers/app.initializer";
 import { UserAuthService } from "./Shared/Services/Auth/user-auth.service";
 import { JwtTokenStorageService } from "./Shared/Services/Auth/jwt-token-storage.service";
+import { UserModule } from "src/app/User/user.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { JwtTokenStorageService } from "./Shared/Services/Auth/jwt-token-storage
     BrowserAnimationsModule,
     ModalModule.forRoot(),
     AuthModule,
+    UserModule,
     NgxSpinnerModule,
     ToastrModule.forRoot(),
   ],
