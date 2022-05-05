@@ -1,1 +1,53 @@
-<p>text-chat works!</p>
+<div class="card" style="height:90vh">
+    <div class="card-header bg-none fw-bold d-flex align-items-center">Random Text Chat Hub 
+        <span class="ms-auto">
+            Status: {{CurrentStatus}}
+        </span>
+        <button (click)="refreshStranger()"
+            class="ms-auto text-muted text-decoration-none"  data-toggle="card-expand"><i class="fa fa-refresh"></i></button>
+    </div>
+    <div class="card-body bg-white bg-opacity-15" data-scrollbar="true" data-height="200px">
+        <div class="widget-chat" *ngFor="let message of TextMessages; let i=index">
+            
+            <ng-container *ngIf="message.Type == 1 ; else elseTemplate">
+                    <div class="widget-chat-item">
+                        <!-- <div class="widget-chat-media"><img src="assets/img/user/user-2.jpg" alt="" /></div> -->
+                        <div class="widget-chat-content">
+                            <!-- <div class="widget-chat-name">Roberto Lambert</div> -->
+                            <div class="widget-chat-message">
+                                {{message.TextMessage}}
+                            </div>
+                           
+                        </div>
+                    </div>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <div class="widget-chat-item reply">
+                    <div class="widget-chat-content">
+                        <div class="widget-chat-message last">
+                            {{message.TextMessage}}
+                        </div>
+                        <!-- <div class="widget-chat-status"><b>Read</b> 16:30</div> -->
+                    </div>
+                </div>
+            </ng-template>
+            
+        
+           
+        </div>
+    </div>
+    <div class="card-footer bg-none">
+        <div class="input-group">
+            <input type="text"[(ngModel)]="InputTextMessage" [disabled]="!IsPaired" class="form-control" (keyup.enter)="sendMessage()" placeholder="write a message...">
+            <button class="btn btn-outline-default" [disabled]="!IsPaired" type="button" (click)="sendMessage()"><i class="fa fa-paper-plane text-muted"></i></button>
+        </div>
+    </div>
+
+    <!-- card-arrow -->
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>

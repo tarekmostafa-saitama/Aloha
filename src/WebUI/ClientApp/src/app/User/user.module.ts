@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { UserLayoutComponent } from './user-layout/user-layout.component';
 import { TextChatComponent } from './text-chat/text-chat.component';
 import { VideoChatComponent } from './video-chat/video-chat.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { VideoChatComponent } from './video-chat/video-chat.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     UserRoutingModule
   ]
 })

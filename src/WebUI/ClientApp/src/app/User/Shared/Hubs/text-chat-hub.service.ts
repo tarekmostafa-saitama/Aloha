@@ -6,7 +6,9 @@ import {
   LogLevel,
 } from "@microsoft/signalr";
 import { MessagePackHubProtocol } from "@microsoft/signalr-protocol-msgpack";
+import { Subject } from "rxjs";
 import { UserAuthService } from "src/app/Shared/Services/Auth/user-auth.service";
+import { TextMessage } from "../Models/text-message";
 
 @Injectable({
   providedIn: "root",
@@ -15,6 +17,18 @@ export class TextChatHubService {
   private hubConnection: HubConnection;
   private connectionUrl = "https://localhost:44312/textChat";
   private apiUrl = "https://localhost:44312/";
+
+  private Connected = new Subject<boolean>(); // Source
+  Connected$ = this.Connected.asObservable(); // Stream
+
+  private ReceivedMessage = new Subject<TextMessage>(); // Source
+  ReceivedMessage$ = this.ReceivedMessage.asObservable(); // Stream
+
+  private UserPaired = new Subject<boolean>(); // Source
+  UserPaired$ = this.UserPaired.asObservable(); // Stream
+
+  private CurrentStatus = new Subject<string>(); // Source
+  CurrentStatus$ = this.CurrentStatus.asObservable(); // Stream
 
   constructor(private userAuthService: UserAuthService) {}
 
@@ -32,6 +46,11 @@ export class TextChatHubService {
       this.hubConnection.state == signalR.HubConnectionState.Connected
     );
   };
+  sendMessage(inputTextMessage: string) {
+    this.hubConnection
+      .invoke("RouteTextMessage", inputTextMessage)
+      .catch((err) => console.log("error while sending to hub: " + err));
+  }
   public registerToRandomChatQueue = () => {
     this.hubConnection
       .invoke("RegisterToQueue")
@@ -57,28 +76,37 @@ export class TextChatHubService {
 
     this.hubConnection
       .start()
-      .then(() => console.log("connection started"))
+      .then(() => {
+        this.Connected.next(true);
+        console.log("connection started");
+      })
       .catch((err) => {
         console.log("error while establishing signalr connection: " + err);
       });
   }
 
   private addListeners() {
-    
     this.hubConnection.onclose((error) => {
       console.log("Error : " + error);
     });
 
     this.hubConnection.on("waitingRandomTextChat", () => {
-      console.log("message received from Hub");
+      this.UserPaired.next(false);
+      this.CurrentStatus.next("Waiting for available random stranger ...");
     });
 
     this.hubConnection.on("setupRandomTextChat", () => {
-      console.log("message received from Hub");
+      this.UserPaired.next(true);
+      this.CurrentStatus.next("Conntected successfully to random stranger.");
     });
 
     this.hubConnection.on("disconnectedRandomTextChat", () => {
-      console.log("message received from Hub");
+      this.UserPaired.next(false);
+      this.CurrentStatus.next("Stranger has been disconnected, please click on refresh button to find another match.");
+    });
+    this.hubConnection.on("receiveTextMessage", (message: TextMessage) => {
+      console.log(message);
+      this.ReceivedMessage.next(message);
     });
   }
 }

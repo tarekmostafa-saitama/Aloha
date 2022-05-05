@@ -13,7 +13,7 @@ public class TextChatHub: Hub
     {
         _textChatQueueService = textChatQueueService;
     }
-    public async Task RouteTextMessage()
+    public async Task RouteTextMessage(string message)
     {
         var otherConnectionId = _textChatQueueService.GetOtherMemberConnectionId(Context.ConnectionId);
         if (string.IsNullOrWhiteSpace(otherConnectionId))
@@ -21,7 +21,7 @@ public class TextChatHub: Hub
             await Clients.Caller.SendAsync("");
             return;
         }
-        await Clients.Client(otherConnectionId).SendAsync("");
+        await Clients.Client(otherConnectionId).SendAsync("receiveTextMessage", new { TextMessage = message, Type = 2 });
     }
     public async Task RegisterToQueue()
     {
