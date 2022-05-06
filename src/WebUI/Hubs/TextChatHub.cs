@@ -8,10 +8,12 @@ namespace CleanArchitecture.WebUI.Hubs;
 public class TextChatHub: Hub
 {
     private readonly ITextChatQueueService _textChatQueueService;
+    private readonly IVideoChatQueueService _videoChatQueueService;
 
-    public TextChatHub(ITextChatQueueService textChatQueueService)
+    public TextChatHub(ITextChatQueueService textChatQueueService, IVideoChatQueueService videoChatQueueService)
     {
         _textChatQueueService = textChatQueueService;
+        _videoChatQueueService = videoChatQueueService;
     }
     public async Task RouteTextMessage(string message)
     {
@@ -46,7 +48,30 @@ public class TextChatHub: Hub
                 await Clients.Client(otherId).SendAsync("disconnectedRandomTextChat");
         }
     }
-    
+    public async Task RegisterToVideoQueue()
+    {
+        var result = _videoChatQueueService.RequestQueue(Context.ConnectionId);
+        if (string.IsNullOrWhiteSpace(result))
+        {
+            await Clients.Caller.SendAsync("waitingRandomVideoChat");
+            return;
+        }
+        _videoChatQueueService.AddToPair(Context.ConnectionId, result);
+        await Clients.Caller.SendAsync("setupRandomVideoChat", result,true);
+        await Clients.Client(result).SendAsync("setupRandomVideoChat", Context.ConnectionId,false);
+
+    }
+    public async Task UnRegisterFromVideoQueue()
+    {
+        var queueResult = _videoChatQueueService.RemoveFromQueue(Context.ConnectionId);
+        if (!queueResult)
+        {
+            var otherId = _videoChatQueueService.RemoveFromPair(Context.ConnectionId);
+            if (!string.IsNullOrWhiteSpace(otherId))
+                await Clients.Client(otherId).SendAsync("disconnectedRandomVideoChat");
+        }
+    }
+
     public override Task OnConnectedAsync()
     {
         return base.OnConnectedAsync();
@@ -61,6 +86,16 @@ public class TextChatHub: Hub
             if (!string.IsNullOrWhiteSpace(otherId))
                 Clients.Client(otherId).SendAsync("disconnectedRandomTextChat");
         }
+
+
+        var queueResult2 = _videoChatQueueService.RemoveFromQueue(Context.ConnectionId);
+        if (!queueResult)
+        {
+            var otherId = _videoChatQueueService.RemoveFromPair(Context.ConnectionId);
+            if (!string.IsNullOrWhiteSpace(otherId))
+                Clients.Client(otherId).SendAsync("disconnectedRandomVideoChat");
+        }
+
         return base.OnDisconnectedAsync(exception);
     }
 }

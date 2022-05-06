@@ -30,6 +30,9 @@ export class TextChatHubService {
   private CurrentStatus = new Subject<string>(); // Source
   CurrentStatus$ = this.CurrentStatus.asObservable(); // Stream
 
+  private OtherVideoConnectionId = new Subject<string>(); // Source
+  OtherVideoConnectionId$ = this.OtherVideoConnectionId.asObservable(); // Stream
+
   constructor(private userAuthService: UserAuthService) {}
 
   public connect = () => {
@@ -61,7 +64,20 @@ export class TextChatHubService {
       .invoke("UnRegisterFromQueue")
       .catch((err) => console.log("error while queueing to hub: " + err));
   };
+  registerToRandomVideoChatQueue() {
+    this.hubConnection
+      .invoke("RegisterToVideoQueue")
+      .catch((err) => console.log("error while queueing to hub: " + err));
+  }
+  public unRegisterFromRandomVideoChatQueue = () => {
+    this.hubConnection
+      .invoke("UnRegisterFromVideoQueue")
+      .catch((err) => console.log("error while queueing to hub: " + err));
+  };
 
+  public getConnectionId(): string {
+    return this.hubConnection.connectionId;
+  }
   private getConnection(): HubConnection {
     return new HubConnectionBuilder()
       .withUrl(this.connectionUrl, {
@@ -94,15 +110,33 @@ export class TextChatHubService {
       this.UserPaired.next(false);
       this.CurrentStatus.next("Waiting for available random stranger ...");
     });
+    this.hubConnection.on("waitingRandomVideoChat", () => {
+      this.UserPaired.next(false);
+      this.CurrentStatus.next("Waiting for available random stranger ...");
+    });
 
     this.hubConnection.on("setupRandomTextChat", () => {
       this.UserPaired.next(true);
       this.CurrentStatus.next("Conntected successfully to random stranger.");
     });
+    this.hubConnection.on("setupRandomVideoChat", (connectionId, call) => {
+      this.UserPaired.next(true);
+      if(call)
+      this.OtherVideoConnectionId.next(connectionId);
+      this.CurrentStatus.next("Conntected successfully to random stranger.");
+    });
 
     this.hubConnection.on("disconnectedRandomTextChat", () => {
       this.UserPaired.next(false);
-      this.CurrentStatus.next("Stranger has been disconnected, please click on refresh button to find another match.");
+      this.CurrentStatus.next(
+        "Stranger has been disconnected, please click on refresh button to find another match."
+      );
+    });
+    this.hubConnection.on("disconnectedRandomVideoChat", () => {
+      this.UserPaired.next(false);
+      this.CurrentStatus.next(
+        "Stranger has been disconnected, please click on refresh button to find another match."
+      );
     });
     this.hubConnection.on("receiveTextMessage", (message: TextMessage) => {
       console.log(message);

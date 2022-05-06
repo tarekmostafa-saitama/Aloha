@@ -53,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenValidator, RefreshTokenValidator>();
         services.AddScoped<IAuthenticateService, AuthenticateService>();
         services.AddScoped<ITextChatQueueService, TextChatQueueService>();
+        services.AddScoped<IVideoChatQueueService, VideoChatQueueService>();
 
 
         var jwtSettings = new JwtSettings();

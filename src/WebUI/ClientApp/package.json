@@ -41,6 +41,7 @@
     "os-browserify": "^0.3.0",
     "popper.js": "^1.14.3",
     "rxjs": "^6.5.4",
+    "skyway-js": "^4.4.4",
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
